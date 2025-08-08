@@ -1,42 +1,68 @@
-import { useState, useEffect } from 'react'
-import Editor from '@monaco-editor/react'
+// SchemaEditor.js
+
+"use client";
+
+import { useState, useEffect, useRef } from 'react';
+import Editor from '@monaco-editor/react';
+import isEqual from 'lodash.isequal'; 
 
 const SchemaEditor = ({ schema, onChange }) => {
-  const [jsonString, setJsonString] = useState('')
-  const [error, setError] = useState('')
-
+  // Initialize state with the prop value only on the first render.
+  const [jsonString, setJsonString] = useState(() =>
+    JSON.stringify(schema, null, 2)
+  );
+  const [error, setError] = useState('');
+  
+  // This effect now intelligently syncs external prop changes with the internal state.
   useEffect(() => {
-    setJsonString(JSON.stringify(schema, null, 2))
-  }, [schema])
+    let internalSchema;
+    try {
+      internalSchema = JSON.parse(jsonString);
+    } catch {
+      // If current text is invalid, it's definitely out of sync.
+      // Reset to the valid prop's value.
+      setJsonString(JSON.stringify(schema, null, 2));
+      return;
+    }
+    
+    // Only update the editor if the parent's schema is truly different
+    // from what's currently in the editor. This check prevents the re-render loop.
+    // We use a deep equality check to compare the objects.
+    if (!isEqual(internalSchema, schema)) {
+      setJsonString(JSON.stringify(schema, null, 2));
+    }
+  }, [schema]); // This effect only runs when the parent's `schema` prop changes.
+
 
   const handleEditorChange = (value) => {
-    setJsonString(value)
-    setError('')
+    setJsonString(value);
+    setError('');
 
     try {
-      const parsed = JSON.parse(value || '[]')
-      onChange(parsed)
+      const parsed = JSON.parse(value || '[]');
+      onChange(parsed);
     } catch (err) {
-      setError('Invalid JSON: ' + err.message)
+      setError('Invalid JSON: ' + err.message);
     }
-  }
+  };
 
   const formatJson = () => {
     try {
-      const parsed = JSON.parse(jsonString)
-      const formatted = JSON.stringify(parsed, null, 2)
-      setJsonString(formatted)
-      setError('')
+      const parsed = JSON.parse(jsonString);
+      const formatted = JSON.stringify(parsed, null, 2);
+      setJsonString(formatted);
+      onChange(parsed); // Also update parent on format
+      setError('');
     } catch (err) {
-      setError('Cannot format invalid JSON')
+      setError('Cannot format invalid JSON');
     }
-  }
+  };
 
   const clearSchema = () => {
-    setJsonString('[]')
-    onChange([])
-    setError('')
-  }
+    setJsonString('[]');
+    onChange([]);
+    setError('');
+  };
 
   return (
     <div className="space-y-4">
@@ -75,10 +101,6 @@ const SchemaEditor = ({ schema, onChange }) => {
             fontSize: 14,
             lineNumbers: 'on',
             roundedSelection: false,
-            scrollbar: {
-              vertical: 'visible',
-              horizontal: 'visible'
-            },
             automaticLayout: true,
             formatOnPaste: true,
             formatOnType: true
@@ -95,7 +117,7 @@ const SchemaEditor = ({ schema, onChange }) => {
         </p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SchemaEditor
+export default SchemaEditor;
