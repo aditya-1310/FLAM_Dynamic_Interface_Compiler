@@ -4,7 +4,7 @@ import React from 'react'
  * SettingsPanel – side panel scaffold for editing selected component properties.
  * For now it only displays the component JSON. We will incrementally enhance it.
  */
-const SettingsPanel = ({ component, onClose }) => {
+const SettingsPanel = ({ component, onClose, onUpdateProp }) => {
   if (!component) return null
 
   return (
@@ -20,9 +20,23 @@ const SettingsPanel = ({ component, onClose }) => {
           ✕
         </button>
       </div>
-      <pre className="text-xs whitespace-pre-wrap bg-slate-900/50 p-3 rounded border border-slate-700/30 max-h-full overflow-auto">
-        {JSON.stringify(component, null, 2)}
-      </pre>
+      {component.type === 'form' ? (
+        <div className="space-y-4">
+          <label className="block text-sm font-medium">
+            Submit Button Text
+            <input
+              type="text"
+              value={component.submitText}
+              onChange={(e) => onUpdateProp && onUpdateProp('submitText', e.target.value)}
+              className="mt-1 w-full px-3 py-2 rounded bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600/50"
+            />
+          </label>
+        </div>
+      ) : (
+        <pre className="text-xs whitespace-pre-wrap bg-slate-900/50 p-3 rounded border border-slate-700/30 max-h-full overflow-auto">
+          {JSON.stringify(component, null, 2)}
+        </pre>
+      )}
     </div>
   )
 }
