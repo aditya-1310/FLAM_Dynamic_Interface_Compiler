@@ -20,8 +20,9 @@ import { CSS } from '@dnd-kit/utilities'
 import DynamicForm from './ComponentLibrary/DynamicForm'
 import DynamicText from './ComponentLibrary/DynamicText'
 import DynamicImage from './ComponentLibrary/DynamicImage'
+import SettingsPanel from './SettingsPanel'
 
-const SortableItem = ({ id, children, onDelete }) => {
+const SortableItem = ({ id, children, onDelete, selected, onSelect }) => {
   const {
     attributes,
     listeners,
@@ -42,7 +43,8 @@ const SortableItem = ({ id, children, onDelete }) => {
       ref={setNodeRef}
       style={style}
       {...attributes}
-      className="relative group"
+      className={`relative group ${selected ? 'border-2 border-blue-500 rounded-lg' : ''}`}
+      onClick={onSelect}
     >
       {/* Drag Handle */}
       <div className="absolute -left-8 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -77,6 +79,7 @@ const SortableItem = ({ id, children, onDelete }) => {
 }
 
 const DragDropRenderer = ({ schema, setSchema }) => {
+  const [selectedIndex, setSelectedIndex] = useState(null);
   // Update content of a specific component
   const updateComponentContent = (idx, newContent) => {
     const newSchema = schema.map((component, i) =>
@@ -220,6 +223,11 @@ const DragDropRenderer = ({ schema, setSchema }) => {
 
   return (
     <div className="relative px-8">
+      {/* Settings side panel */}
+      <SettingsPanel
+        component={selectedIndex != null ? schema[selectedIndex] : null}
+        onClose={() => setSelectedIndex(null)}
+      />
       {/* Add Component Buttons */}
       <div className="mb-4 flex gap-2 justify-center">
         <button
@@ -257,6 +265,8 @@ const DragDropRenderer = ({ schema, setSchema }) => {
                 key={index}
                 id={index.toString()}
                 onDelete={handleDelete}
+                selected={selectedIndex === index}
+                onSelect={() => setSelectedIndex(index)}
               >
                 {renderComponent(componentSchema, index)}
               </SortableItem>
