@@ -4,7 +4,7 @@ import React from 'react'
  * SettingsPanel – side panel scaffold for editing selected component properties.
  * For now it only displays the component JSON. We will incrementally enhance it.
  */
-const SettingsPanel = ({ component, onClose, onUpdateProp }) => {
+const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteField, onUpdateFieldProp }) => {
   if (!component) return null
 
   return (
@@ -22,7 +22,49 @@ const SettingsPanel = ({ component, onClose, onUpdateProp }) => {
       </div>
       {component.type === 'form' ? (
         <div className="space-y-4">
+          <button
+            onClick={onAddField}
+            className="w-full mb-4 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium"
+          >
+            + Add Field
+          </button>
           <label className="block text-sm font-medium">
+            Fields
+            {component.fields?.map((f, idx) => (
+              <div key={idx} className="mb-3 p-2 rounded bg-slate-800/40 border border-slate-700/50">
+                <label className="block text-xs font-medium mb-1">Label
+                  <input
+                    type="text"
+                    value={f.label}
+                    onChange={(e) => onUpdateFieldProp && onUpdateFieldProp(idx, 'label', e.target.value)}
+                    className="mt-1 w-full px-2 py-1 rounded bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600/50 text-xs"
+                  />
+                </label>
+                <label className="block text-xs font-medium mb-1">Placeholder
+                  <input
+                    type="text"
+                    value={f.placeholder}
+                    onChange={(e) => onUpdateFieldProp && onUpdateFieldProp(idx, 'placeholder', e.target.value)}
+                    className="mt-1 w-full px-2 py-1 rounded bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600/50 text-xs"
+                  />
+                </label>
+                <div className="flex items-center justify-between mt-1">
+                  <span className="text-xs">Required</span>
+                  <input
+                    type="checkbox"
+                    checked={f.required}
+                    onChange={(e) => onUpdateFieldProp && onUpdateFieldProp(idx, 'required', e.target.checked)}
+                  />
+                  <button
+                    onClick={() => onDeleteField && onDeleteField(idx)}
+                    className="text-red-400 hover:text-red-600 text-sm ml-2"
+                  >
+                    ✖
+                  </button>
+                </div>
+              </div>
+            ))}
+            <hr className="my-3 border-slate-700" />
             Submit Button Text
             <input
               type="text"
