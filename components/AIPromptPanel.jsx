@@ -13,7 +13,7 @@ const AIPromptPanel = ({ onSchemaGenerated, isLoading, setIsLoading }) => {
     setError('')
 
     try {
-      const response = await axios.post('http://localhost:3001/api/generate-schema', {
+      const response = await axios.post('https://backend-dynamic-interface-compiler.onrender.com/api/generate-schema', {
         prompt: prompt.trim()
       })
 

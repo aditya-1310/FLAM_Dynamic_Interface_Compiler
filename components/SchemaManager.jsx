@@ -17,7 +17,7 @@ const SchemaManager = ({ schema, setSchema }) => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://localhost:3001/api/schemas', {
+      const response = await axios.post('https://backend-dynamic-interface-compiler.onrender.com/api/schemas', {
         name: saveName.trim(),
         description: saveDescription.trim(),
         schema: schema,
@@ -42,7 +42,7 @@ const SchemaManager = ({ schema, setSchema }) => {
   const handleLoad = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('http://localhost:3001/api/schemas');
+      const response = await axios.get('https://backend-dynamic-interface-compiler.onrender.com/api/schemas');
       if (response.data.success) {
         setSavedSchemas(response.data.schemas);
         setShowLoadDialog(true);

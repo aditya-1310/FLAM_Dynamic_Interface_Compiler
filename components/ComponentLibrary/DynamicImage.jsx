@@ -45,7 +45,7 @@ const DynamicImage = ({
         }}
         onError={(e) => {
           // Fallback for broken images
-          e.target.src = 'https://via.placeholder.com/300x200/f3f4f6/9ca3af?text=Image+Not+Found'
+          e.target.src = 'https://placehold.co/300x200?text=Image+Not+Found&font=roboto'
           e.target.alt = 'Image failed to load'
         }}
       />
