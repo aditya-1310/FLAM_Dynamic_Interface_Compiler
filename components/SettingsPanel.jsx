@@ -8,7 +8,7 @@ const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteF
   if (!component) return null
 
   return (
-    <div className="fixed right-0 top-0 h-full w-80 bg-slate-800/90 backdrop-blur-md border-l border-slate-700/50 p-6 text-slate-100 shadow-lg z-50">
+    <div className="fixed right-0 top-0 h-full w-80 bg-slate-800/90 backdrop-blur-md border-l border-slate-700/50 p-6 text-slate-100 shadow-lg z-50 overflow-y-auto">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold capitalize">
           {component.type} settings
@@ -39,6 +39,17 @@ const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteF
                     onChange={(e) => onUpdateFieldProp && onUpdateFieldProp(idx, 'label', e.target.value)}
                     className="mt-1 w-full px-2 py-1 rounded bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600/50 text-xs"
                   />
+                </label>
+                <label className="block text-xs font-medium mb-1">Type
+                  <select
+                    value={f.type}
+                    onChange={(e) => onUpdateFieldProp && onUpdateFieldProp(idx, 'type', e.target.value)}
+                    className="mt-1 w-full px-2 py-1 rounded bg-slate-900 text-slate-100 border border-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-600/50 text-xs"
+                  >
+                    {['text','email','number','password','textarea'].map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
                 </label>
                 <label className="block text-xs font-medium mb-1">Placeholder
                   <input
