@@ -87,6 +87,16 @@ const DragDropRenderer = ({ schema, setSchema }) => {
     );
     setSchema(newSchema);
   };
+
+  const addFormField = (idx) => {
+    const defaultField = { label: 'New Field', type: 'text', required: false, placeholder: '' };
+    const newSchema = schema.map((comp, i) => {
+      if (i !== idx) return comp;
+      if (comp.type !== 'form') return comp;
+      return { ...comp, fields: [...(comp.fields || []), defaultField] };
+    });
+    setSchema(newSchema);
+  };
   // Update content of a specific component
   const updateComponentContent = (idx, newContent) => {
     const newSchema = schema.map((component, i) =>
@@ -237,6 +247,7 @@ const DragDropRenderer = ({ schema, setSchema }) => {
         onUpdateProp={(key, value) =>
           selectedIndex != null && updateComponentProp(selectedIndex, key, value)
         }
+        onAddField={() => selectedIndex != null && addFormField(selectedIndex)}
       />
       {/* Add Component Buttons */}
       <div className="mb-4 flex gap-2 justify-center">
