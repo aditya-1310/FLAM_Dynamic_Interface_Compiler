@@ -29,6 +29,19 @@ const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField }) => {
             + Add Field
           </button>
           <label className="block text-sm font-medium">
+            Fields
+            {component.fields?.map((f, idx) => (
+              <div key={idx} className="flex items-center mb-2 text-sm">
+                <span className="flex-1 truncate">{f.label}</span>
+                <button
+                  onClick={() => onDeleteField && onDeleteField(idx)}
+                  className="text-red-400 hover:text-red-600 ml-2"
+                >
+                  ✖
+                </button>
+              </div>
+            ))}
+            <hr className="my-3 border-slate-700" />
             Submit Button Text
             <input
               type="text"
