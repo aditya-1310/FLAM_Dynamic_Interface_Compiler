@@ -8,7 +8,8 @@ const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteF
   if (!component) return null
 
   return (
-    <div className="fixed right-0 top-0 h-full w-80 bg-slate-800/90 backdrop-blur-md border-l border-slate-700/50 p-6 text-slate-100 shadow-lg z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-slate-800/90 backdrop-blur-md rounded-lg border border-slate-700/50 p-6 text-slate-100 shadow-xl">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold capitalize">
           {component.type} settings
@@ -86,11 +87,12 @@ const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteF
           </label>
         </div>
       ) : (
-        <pre className="text-xs whitespace-pre-wrap bg-slate-900/50 p-3 rounded border border-slate-700/30 max-h-full overflow-auto">
+         <pre className="text-xs whitespace-pre-wrap bg-slate-900/50 p-3 rounded border border-slate-700/30 max-h-full overflow-auto">
           {JSON.stringify(component, null, 2)}
         </pre>
-      )}
-    </div>
+       )}
+       </div>
+     </div>
   )
 }
 
