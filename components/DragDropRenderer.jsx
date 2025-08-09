@@ -80,6 +80,13 @@ const SortableItem = ({ id, children, onDelete, selected, onSelect }) => {
 
 const DragDropRenderer = ({ schema, setSchema }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
+
+  const updateComponentProp = (idx, key, value) => {
+    const newSchema = schema.map((comp, i) =>
+      i === idx ? { ...comp, [key]: value } : comp
+    );
+    setSchema(newSchema);
+  };
   // Update content of a specific component
   const updateComponentContent = (idx, newContent) => {
     const newSchema = schema.map((component, i) =>
@@ -227,6 +234,9 @@ const DragDropRenderer = ({ schema, setSchema }) => {
       <SettingsPanel
         component={selectedIndex != null ? schema[selectedIndex] : null}
         onClose={() => setSelectedIndex(null)}
+        onUpdateProp={(key, value) =>
+          selectedIndex != null && updateComponentProp(selectedIndex, key, value)
+        }
       />
       {/* Add Component Buttons */}
       <div className="mb-4 flex gap-2 justify-center">
