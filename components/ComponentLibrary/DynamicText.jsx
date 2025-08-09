@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // The mapping from variant string to actual HTML tag
 const variantMappings = {
   h1: 'h1',
@@ -10,12 +12,10 @@ const variantMappings = {
   span: 'span',
 };
 
-const DynamicText = ({ content, variant = 'p', className = '' }) => {
+const DynamicText = ({ content, variant = 'p', className = '', onContentChange }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const Tag = variantMappings[variant] || 'p';
 
-  // --- FIX IS HERE ---
-  // I've added a default light text color (e.g., `text-slate-100`) to each
-  // variant to ensure it's visible on dark backgrounds.
   const variantClasses = {
     h1: 'text-4xl font-bold text-slate-100',
     h2: 'text-3xl font-bold text-slate-100',
@@ -27,10 +27,42 @@ const DynamicText = ({ content, variant = 'p', className = '' }) => {
     span: 'text-base text-slate-300',
   };
 
-  // Combine the default variant styles with any custom classes passed in props
   const classes = `${variantClasses[variant] || 'text-slate-300'} ${className}`;
 
-  return <Tag className={classes}>{content}</Tag>;
+  const finishEditing = () => {
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      finishEditing();
+    }
+  };
+
+  if (isEditing && onContentChange) {
+    return (
+      <input
+        autoFocus
+        type="text"
+        className={`bg-transparent border-b border-slate-500 focus:outline-none ${classes}`}
+        value={content}
+        onChange={(e) => onContentChange(e.target.value)}
+        onBlur={finishEditing}
+        onKeyDown={handleKeyDown}
+      />
+    );
+  }
+
+  return (
+    <Tag
+      className={classes}
+      onDoubleClick={() => {
+        if (onContentChange) setIsEditing(true);
+      }}
+    >
+      {content}
+    </Tag>
+  );
 };
 
 export default DynamicText;

@@ -77,6 +77,13 @@ const SortableItem = ({ id, children, onDelete }) => {
 }
 
 const DragDropRenderer = ({ schema, setSchema }) => {
+  // Update content of a specific component
+  const updateComponentContent = (idx, newContent) => {
+    const newSchema = schema.map((component, i) =>
+      i === idx ? { ...component, content: newContent } : component
+    );
+    setSchema(newSchema);
+  };
   const [results, setResults] = useState({})
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -93,7 +100,13 @@ const DragDropRenderer = ({ schema, setSchema }) => {
         onResult={(result) => setResults(prev => ({ ...prev, [`form_${index}`]: result }))}
       />
     ),
-    text: (props, index) => <DynamicText key={`text-${index}`} {...props} />,
+    text: (props, index) => (
+      <DynamicText
+        key={`text-${index}`}
+        {...props}
+        onContentChange={(val) => updateComponentContent(index, val)}
+      />
+    ),
     image: (props, index) => <DynamicImage key={`image-${index}`} {...props} />
   }
 
