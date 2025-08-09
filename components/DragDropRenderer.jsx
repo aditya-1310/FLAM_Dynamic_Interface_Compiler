@@ -106,6 +106,17 @@ const DragDropRenderer = ({ schema, setSchema }) => {
     setSchema(newSchema);
   };
 
+  const updateFieldProp = (idx, fieldIdx, key, value) => {
+    const newSchema = schema.map((comp, i) => {
+      if (i !== idx || comp.type !== 'form') return comp;
+      const updatedFields = comp.fields.map((f, fi) =>
+        fi === fieldIdx ? { ...f, [key]: value } : f
+      );
+      return { ...comp, fields: updatedFields };
+    });
+    setSchema(newSchema);
+  };
+
   // Update content of a specific component
   const updateComponentContent = (idx, newContent) => {
     const newSchema = schema.map((component, i) =>
@@ -255,6 +266,12 @@ const DragDropRenderer = ({ schema, setSchema }) => {
         onClose={() => setSelectedIndex(null)}
         onUpdateProp={(key, value) =>
           selectedIndex != null && updateComponentProp(selectedIndex, key, value)
+        }
+        onDeleteField={(fieldIdx) =>
+          selectedIndex != null && deleteFormField(selectedIndex, fieldIdx)
+        }
+        onUpdateFieldProp={(fieldIdx, key, value) =>
+          selectedIndex != null && updateFieldProp(selectedIndex, fieldIdx, key, value)
         }
         onAddField={() => selectedIndex != null && addFormField(selectedIndex)}
       />
