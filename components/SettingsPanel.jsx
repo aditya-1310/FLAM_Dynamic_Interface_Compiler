@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 
 /**
  * SettingsPanel – side panel scaffold for editing selected component properties.
@@ -7,12 +7,40 @@ import React from 'react'
 const SettingsPanel = ({ component, onClose, onUpdateProp, onAddField, onDeleteField, onUpdateFieldProp }) => {
   if (!component) return null
 
+  // Simple draggable position state
+  const [pos, setPos] = useState({ x: 100, y: 100 });
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const panelW = 320; // w-80 ~ 320px
+      const panelH = 500; // approximate height
+      const centerX = window.innerWidth / 2 - panelW / 2;
+      const centerY = window.innerHeight / 2 - panelH / 2;
+      setPos({ x: centerX, y: Math.max(centerY, 20) });
+    }
+  }, []);
+
+  const handleMouseDown = (e) => {
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startPos = pos;
+    const onMove = (ev) => {
+      setPos({ x: startPos.x + ev.clientX - startX, y: startPos.y + ev.clientY - startY });
+    };
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-md max-h-[90vh] overflow-y-auto bg-slate-800/90 backdrop-blur-md rounded-lg border border-slate-700/50 p-6 text-slate-100 shadow-xl">
-      <div className="flex justify-between items-center mb-4">
+    <div className="fixed z-50" style={{ left: pos.x, top: pos.y }}>
+      <div className="w-80 max-h-[90vh] overflow-y-auto bg-slate-800/90 backdrop-blur-md rounded-lg border border-slate-700/50 p-6 text-slate-100 shadow-xl cursor-grab active:cursor-grabbing" onMouseDown={handleMouseDown}>
+      <div className="flex justify-between items-center mb-4 cursor-grab select-none">
         <h3 className="text-lg font-semibold capitalize">
           {component.type} settings
+            <span className="block text-xs font-normal text-slate-400">Drag to reposition</span>
         </h3>
         <button
           onClick={onClose}
