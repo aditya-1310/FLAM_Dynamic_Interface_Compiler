@@ -97,6 +97,15 @@ const DragDropRenderer = ({ schema, setSchema }) => {
     });
     setSchema(newSchema);
   };
+
+  const deleteFormField = (idx, fieldIdx) => {
+    const newSchema = schema.map((comp, i) => {
+      if (i !== idx || comp.type !== 'form') return comp;
+      return { ...comp, fields: comp.fields.filter((_, fi) => fi !== fieldIdx) };
+    });
+    setSchema(newSchema);
+  };
+
   // Update content of a specific component
   const updateComponentContent = (idx, newContent) => {
     const newSchema = schema.map((component, i) =>
